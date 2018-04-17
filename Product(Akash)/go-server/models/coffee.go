@@ -32,7 +32,20 @@ type Coffee struct {
 
 
 func FindCoffee(id string) (*Coffee, error) {
+    conn, err := db.Get()
+    if err != nil {
+        return nil, err
+    }
+    defer db.Put(conn)
 
+    reply, err := conn.Cmd("HGETALL", "coffee:"+id).Map()
+    if err != nil {
+        return nil, err
+    } else if len(reply) == 0 {
+        return nil, ErrNoProduct
+    }
+
+    return populateEntry(reply)
 }
 
 func populateEntry(reply map[string]string) (*Coffee, error) {
