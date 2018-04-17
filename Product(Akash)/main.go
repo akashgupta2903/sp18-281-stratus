@@ -22,7 +22,6 @@ func getDetail(w http.ResponseWriter, r *http.Request) {
     }
     //in case id is empty
     id := r.URL.Query().Get("id")
-
     if id == "" {
         http.Error(w, http.StatusText(400), 400)
         return
@@ -32,7 +31,7 @@ func getDetail(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    coffee, err := models.FindCoffee(id)
+    product, err := models.FindProduct(id)
     if err == models.ErrNoProduct {
         http.NotFound(w, r)
         return
@@ -40,5 +39,5 @@ func getDetail(w http.ResponseWriter, r *http.Request) {
         http.Error(w, http.StatusText(500), 500)
         return
     }
-    json.NewEncoder(w).Encode(coffee)
+    json.NewEncoder(w).Encode(product)
 }
