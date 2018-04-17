@@ -49,5 +49,10 @@ func FindCoffee(id string) (*Coffee, error) {
 }
 
 func populateEntry(reply map[string]string) (*Coffee, error) {
-
+    var err error
+    coffee := new(Coffee)
+    coffee.Name = reply["Name"]
+    coffee.Ingredients = reply["Ingredients"]
+    coffee.Price, err = strconv.ParseFloat(reply["price"], 64)
+    return coffee, nil
 }
