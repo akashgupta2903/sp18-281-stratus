@@ -9,6 +9,7 @@ import (
 
 func main() {
     http.HandleFunc("/getdetail", getDetail)
+    http.HandleFunc("/like", addLike)
     http.ListenAndServe(":4000", nil)
 }
 
@@ -40,4 +41,16 @@ func getDetail(w http.ResponseWriter, r *http.Request) {
         return
     }
     json.NewEncoder(w).Encode(product)
+}
+
+
+func addLike(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    if r.Method != "POST" {
+        w.Header().Set("Allow", "POST")
+        http.Error(w, http.StatusText(405), 405)
+        return
+    }
+    id := r.URL.Query().Get("id")
+    http.Redirect(w, r, "/getdetail?id="+id, 303)
 }
