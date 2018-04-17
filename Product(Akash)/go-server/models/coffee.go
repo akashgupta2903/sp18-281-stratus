@@ -54,5 +54,12 @@ func populateEntry(reply map[string]string) (*Coffee, error) {
     coffee.Name = reply["Name"]
     coffee.Ingredients = reply["Ingredients"]
     coffee.Price, err = strconv.ParseFloat(reply["price"], 64)
+    if err != nil {
+        return nil, err
+    }
+    coffee.Likes, err = strconv.Atoi(reply["likes"])
+    if err != nil {
+        return nil, err
+    }
     return coffee, nil
 }

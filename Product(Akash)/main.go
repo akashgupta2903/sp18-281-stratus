@@ -2,7 +2,7 @@ package main
 
 import (
     "net/http"
-    "personal_project1/models"
+    "go-server/models"
     "strconv"
     "encoding/json"
 )
