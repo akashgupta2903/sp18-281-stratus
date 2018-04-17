@@ -23,6 +23,15 @@ func getDetail(w http.ResponseWriter, r *http.Request) {
     //in case id is empty
     id := r.URL.Query().Get("id")
 
+    if id == "" {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+    if _, err := strconv.Atoi(id); err != nil {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+
     coffee, err := models.FindCoffee(id)
     if err == models.ErrNoProduct {
         http.NotFound(w, r)
