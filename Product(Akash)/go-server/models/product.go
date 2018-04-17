@@ -75,35 +75,3 @@ func populateEntry(reply map[string]string) (*Product, error) {
     }
     return product, nil
 }
-
-func IncrementLikes(id string) error {
-    conn, err := db.Get()
-    if err != nil {
-        return err
-    }
-    defer db.Put(conn)
-
-    exists, err := conn.Cmd("EXISTS", "product:"+id).Int()
-    if err != nil {
-        return err
-    } else if exists == 0 {
-        return ErrNoProduct
-    }
-    err = conn.Cmd("MULTI").Err
-    if err != nil {
-        return err
-    }
-    err = conn.Cmd("HINCRBY", "product:"+id, "likes", 1).Err
-    if err != nil {
-        return err
-    }
-    err = conn.Cmd("ZINCRBY", "likes", 1, id).Err
-    if err != nil {
-        return err
-    }
-    err = conn.Cmd("EXEC").Err
-    if err != nil {
-        return err
-    }
-    return nil
-}
