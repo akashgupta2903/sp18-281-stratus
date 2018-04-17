@@ -52,5 +52,22 @@ func addLike(w http.ResponseWriter, r *http.Request) {
         return
     }
     id := r.URL.Query().Get("id")
+    if id == "" {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+    if _, err := strconv.Atoi(id); err != nil {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+
+    err := models.IncrementLikes(id)
+    if err == models.ErrNoProduct {
+        http.NotFound(w, r)
+        return
+    } else if err != nil {
+        http.Error(w, http.StatusText(500), 500)
+        return
+    }
     http.Redirect(w, r, "/getdetail?id="+id, 303)
 }
