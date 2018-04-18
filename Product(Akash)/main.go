@@ -11,6 +11,7 @@ func main() {
     http.HandleFunc("/getdetail", getDetail)
     http.HandleFunc("/like", addLike)
     http.HandleFunc("/getallproducts", getALL)
+    http.HandleFunc("/popular", listPopular)
     http.ListenAndServe(":4000", nil)
 }
 
@@ -92,5 +93,24 @@ func getALL(w http.ResponseWriter, r *http.Request) {
   }
   */
 
-}
 
+func listPopular(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Content-Type", "application/json")
+  if r.Method != "GET" {
+    w.Header().Set("Allow", "GET")
+    http.Error(w, http.StatusText(405), 405)
+    return
+  }
+
+  abs, err := models.FindTopThree()
+  if err != nil {
+    http.Error(w, http.StatusText(500), 500)
+    return
+  }
+  json.NewEncoder(w).Encode(abs)
+/*
+  for i, ab := range abs {
+    fmt.Fprintf(w, "%d) %s by %s: £%.2f [%d likes] \n", i+1, ab.Title, ab.Artist, ab.Price, ab.Likes)
+  }
+*/
+}
