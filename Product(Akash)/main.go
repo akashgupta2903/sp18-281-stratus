@@ -10,6 +10,7 @@ import (
 func main() {
     http.HandleFunc("/getdetail", getDetail)
     http.HandleFunc("/like", addLike)
+    http.HandleFunc("/getallproducts", getALL)
     http.ListenAndServe(":4000", nil)
 }
 
@@ -71,3 +72,25 @@ func addLike(w http.ResponseWriter, r *http.Request) {
     }
     http.Redirect(w, r, "/getdetail?id="+id, 303)
 }
+
+func getALL(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Content-Type", "application/json")
+  if r.Method != "GET" {
+    w.Header().Set("Allow", "GET")
+    http.Error(w, http.StatusText(405), 405)
+    return
+  }
+  abs, err := models.FindAll()
+  if err != nil {
+    http.Error(w, http.StatusText(500), 500)
+    return
+  }
+  json.NewEncoder(w).Encode(abs)
+  /*
+  for i, ab := range abs {
+    fmt.Fprintf(w, "%d) %s by %s: £%.2f [%d likes] \n", i+1, ab.Name, ab.Ingredients, ab.Price, ab.Likes)
+  }
+  */
+
+}
+
