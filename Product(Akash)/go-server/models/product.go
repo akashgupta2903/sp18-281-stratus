@@ -75,3 +75,61 @@ func populateEntry(reply map[string]string) (*Product, error) {
     }
     return product, nil
 }
+
+func FindAll() ([]*Product, error) {
+    conn, err := db.Get()
+    if err != nil {
+        return nil, err
+    }
+    defer db.Put(conn)
+
+    for {
+        // Instruct Redis to watch the likes sorted set for any changes.
+        err = conn.Cmd("WATCH", "likes").Err
+        if err != nil {
+            return nil, err
+        }
+        reply, err := conn.Cmd("ZRANGE", "likes", 0, 9).List()
+        if err != nil {
+            return nil, err
+        }
+
+        // Use the MULTI command to inform Redis that we are starting a new
+        // transaction.
+        err = conn.Cmd("MULTI").Err
+        if err != nil {
+            return nil, err
+        }
+        for _, id := range reply {
+            err := conn.Cmd("HGETALL", "product:"+id).Err
+            if err != nil {
+                return nil, err
+            }
+        }
+        ereply := conn.Cmd("EXEC")
+        if ereply.Err != nil {
+            return nil, err
+        } else if ereply.IsType(redis.Nil) {
+            continue
+        }
+
+        areply, err := ereply.Array()
+        if err != nil {
+            return nil, err
+        }
+        abs := make([]*Product, 10)
+        for i, reply := range areply {
+            mreply, err := reply.Map()
+            if err != nil {
+                return nil, err
+            }
+            ab, err := populateEntry(mreply)
+            if err != nil {
+                return nil, err
+            }
+            abs[i] = ab
+        }
+
+        return abs, nil
+    }
+}
