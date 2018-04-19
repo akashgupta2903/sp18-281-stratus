@@ -3,7 +3,6 @@ package main
 import (
     "fmt"
     "net/http"
-    "strconv"
     "encoding/json"
 )
 
@@ -22,24 +21,24 @@ func updateOrder(w http.ResponseWriter, r *http.Request) {
     }
 
     var o Order
-    _ = json.NewDecoder(r.Body).Decode(&o)
+    err1 := json.NewDecoder(r.Body).Decode(&o)
     fmt.Println("Updating Order ", o.order_id)
-    if o == nil {
+    if err1 != nil {
         fmt.Println("Server error: could not parse request body into Order type")
         http.Error(w, http.StatusText(400), 400)
         return
     }
 
-    err := UpdateOrder(o)
-    if err == models.ErrNoOrder {
+    err2 := UpdateOrder(o)
+    if err2 == ErrNoOrder {
         fmt.Println("Server error: no order found in database")
         http.NotFound(w, r)
         return
-    } else if err != nil {
+    } else if err2 != nil {
         fmt.Println("Server error: other error encountered")
         http.Error(w, http.StatusText(500), 500)
         return
     }
-    
+
     w.Write([]byte("OK"))
 }
