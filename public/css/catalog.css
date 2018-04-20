@@ -1,23 +1,23 @@
-#searchField {
-  width: 500px;
+body {
+  background-image: url("../assets/coffee.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
 }
 
-#confirmLogout {
-  display: none;
-}
 #contentDiv {
   padding: 10px 20px 0px 20px;
 }
 
 /* Style the tab */
-.tab {
+.tabDiv {
   overflow: hidden;
   border: 1px solid #ccc;
   background-color: #f1f1f1;
 }
 
 /* Style the buttons inside the tab */
-.tab button {
+.tabDiv button {
   background-color: inherit;
   float: left;
   border: none;
@@ -30,12 +30,12 @@
 }
 
 /* Change background color of buttons on hover */
-.tab button:hover {
+.tabDiv button:hover {
   background-color: #ddd;
 }
 
 /* Create an active/current tablink class */
-.tab button.active {
+.tabDiv button.active {
   background-color: #ccc;
 }
 
@@ -45,23 +45,6 @@
   padding: 6px 12px;
   border: 1px solid #ccc;
   border-top: none;
-}
-
-#vrtab {
-  display: block;
-}
-
-#uploadSuccessSpan {
-  display: none;
-  position: absolute;
-  border: 2px solid darkgreen;
-  background-color: green;
-  border-radius: 10px;
-  left: 50px;
-  bottom: 30px;
-  color: white;
-  font-size: 20pt;
-  padding: 5px 10px;
 }
 
 table{

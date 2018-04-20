@@ -17,10 +17,11 @@ var mongodb_collection = "orders"
 var ErrNoOrder = errors.New("Database error: no order found")
 
 type Order struct {
-    order_id int
-    timestamp string
-    status string
-    items []int64
+    Order_id int
+    User_id int
+    Timestamp string
+    Status string
+    Items []int
 }
 
 func UpdateOrder(order Order) (error) {
@@ -32,16 +33,16 @@ func UpdateOrder(order Order) (error) {
     defer session.Close()
     session.SetMode(mgo.Monotonic, true)
     c := session.DB(mongodb_database).C(mongodb_collection)
-    query := bson.M{"order_id" : order.order_id}
-    change := bson.M{"$set": bson.M{ "items" : order.items,
-        "timestamp": time.Now().Format(time.RFC822) }}
+    query := bson.M{"order_id" : order.Order_id}
+    change := bson.M{"$set": bson.M{ "items" : order.Items,
+        "Timestamp": time.Now().Format(time.RFC822) }}
     err = c.Update(query, change)
     if err != nil {
         log.Fatal(err)
         return err
     }
     var result bson.M
-    err = c.Find(bson.M{"order_id" : order.order_id}).One(&result)
+    err = c.Find(bson.M{"order_id" : order.Order_id}).One(&result)
     if err != nil {
         log.Fatal(err)
         return err

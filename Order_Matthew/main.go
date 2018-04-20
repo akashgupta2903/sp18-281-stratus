@@ -7,12 +7,12 @@ import (
 )
 
 func main() {
-    http.HandleFunc("/updateorder", updateOrder)
+    http.HandleFunc("/updateorder", UpdateOrderHandler)
     fmt.Println("Go server listening on port 4000...")
     http.ListenAndServe(":4000", nil)
 }
 
-func updateOrder(w http.ResponseWriter, r *http.Request) {
+func UpdateOrderHandler(w http.ResponseWriter, r *http.Request) {
     w.Header().Set("Content-Type", "application/json")
     if r.Method != "PUT" {
         w.Header().Set("Allow", "PUT")
@@ -22,7 +22,7 @@ func updateOrder(w http.ResponseWriter, r *http.Request) {
 
     var o Order
     err1 := json.NewDecoder(r.Body).Decode(&o)
-    fmt.Println("Updating Order ", o.order_id)
+    fmt.Println("Updating Order: ", o.Order_id, o.User_id, o.Timestamp, o.Status)
     if err1 != nil {
         fmt.Println("Server error: could not parse request body into Order type")
         http.Error(w, http.StatusText(400), 400)
@@ -40,5 +40,5 @@ func updateOrder(w http.ResponseWriter, r *http.Request) {
         return
     }
 
-    w.Write([]byte("OK"))
+    http.StatusText(200)
 }
