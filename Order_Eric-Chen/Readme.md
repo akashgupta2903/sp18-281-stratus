@@ -5,7 +5,7 @@ Below is the list of APIs handled in this part of the application:
 | API Route           | Method           | Description                                                    |
 | --------------------|------------------| ---------------------------------------------------------------|
 | /payorder?id={id}  | POST              | Responsible for paying an order given its id             |
-| /cancelorder?id={id}  | DELETE              | Responsible for canceling an order given its id             |
+| /cancelorder?id={id}  | POST              | Responsible for canceling an order given its id             |
 
 
 <h4>Pay Order
