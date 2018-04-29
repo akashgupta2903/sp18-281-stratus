@@ -46,7 +46,64 @@ func UpdateOrder(order Order) (error) {
     if err != nil {
         log.Fatal(err)
         return err
-    }        
-    fmt.Println("New Order:", result )
+    }    
+
+    fmt.Println("Updated Order: ", result )
+    return nil
+}
+
+func PayOrder(id int) (error) {
+    session, err := mgo.Dial(mongodb_server)
+    if err != nil {
+        panic(err)
+        return err
+    }
+    defer session.Close()
+    session.SetMode(mgo.Monotonic, true)
+    c := session.DB(mongodb_database).C(mongodb_collection)
+    query := bson.M{"order_id" : id}
+    change := bson.M{"$set": bson.M{ "status" : "Paid",
+        "Timestamp": time.Now().Format(time.RFC822) }}
+    err = c.Update(query, change)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+    var result bson.M
+    err = c.Find(bson.M{"order_id" : id}).One(&result)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+
+    fmt.Println("Paid Order: ", result)
+    return nil
+}
+
+func CancelOrder(id int) (error) {
+    session, err := mgo.Dial(mongodb_server)
+    if err != nil {
+        panic(err)
+        return err
+    }
+    defer session.Close()
+    session.SetMode(mgo.Monotonic, true)
+    c := session.DB(mongodb_database).C(mongodb_collection)
+    query := bson.M{"order_id" : id}
+    change := bson.M{"$set": bson.M{ "status" : "Canceled",
+        "Timestamp": time.Now().Format(time.RFC822) }}
+    err = c.Update(query, change)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+    var result bson.M
+    err = c.Find(bson.M{"order_id" : id}).One(&result)
+    if err != nil {
+        log.Fatal(err)
+        return err
+    }
+
+    fmt.Println("Canceled Order: ", result)
     return nil
 }
