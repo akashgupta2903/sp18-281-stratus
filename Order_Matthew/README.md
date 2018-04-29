@@ -4,4 +4,4 @@ Below is the list of APIs handled in this part of the application:
 
 | API Route           | Method           | Description                                                    |
 | --------------------|------------------| ---------------------------------------------------------------|
-| /updateorder?id={id}  | PUT              | Responsible for updating an order given its id             |
+| /updateorder  | PUT              | Responsible for updating an order's items. The order object is passed within the request body, with some fields being set by the server prior to insertion into the database.            |
