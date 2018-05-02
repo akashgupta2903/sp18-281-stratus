@@ -205,8 +205,9 @@ func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Reques
 	// Get the existing entry present in the database for the given username
 	err = c.Find( bson.M{"username":usr.UserName}).Select(bson.M{"password": 1}).One(&storedUsr)
 
+
 	if err != nil {
-		respondWithError(res, http.StatusInternalServerError, err.Error())
+		respondWithError(res, http.StatusInternalServerError,"UserName doesnt exist")
 		return
 	}
 
@@ -214,14 +215,21 @@ func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Reques
 	
 	if err != nil {
 		//http.Redirect(res, req, "UserForm/login.html", 301)
-		respondWithError(res, http.StatusInternalServerError, err.Error())
+		respondWithError(res, http.StatusInternalServerError, "Invalid Password")
 		return
 	}
 
-    setSession(usr.UserName, res)
-	res.Write([]byte("Hello " + usr.UserName))
-   
 
+	u := User{}
+
+    err = c.Find(bson.M{"username":usr.UserName}).One(&u)
+
+   
+    setSession(u.UserName, res)
+
+	//res.Write([]byte("Hello " + usr.UserName))
+
+	respondWithJson(res, http.StatusCreated, u)
 
 }
 
@@ -247,7 +255,7 @@ func homePageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Req
 	
 	return func(res http.ResponseWriter, req *http.Request) {
 
-http.ServeFile(res, req, "UserForm/index.html")
+	http.ServeFile(res, req, "UserForm/index.html")
 
 
 }
@@ -314,7 +322,7 @@ func main() {
 
   fmt.Println("Starbucks server listening on port 8000")
 
-	http.ListenAndServe(":8000", r)
+  http.ListenAndServe(":8000", r)
 
 
 }
