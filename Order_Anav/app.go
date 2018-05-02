@@ -129,7 +129,7 @@ func main() {
 	r.HandleFunc("/orders", AllOrdersEndpoint).Methods("GET")
 	r.HandleFunc("/orders", CreateOrderEndpoint).Methods("POST")
 	r.HandleFunc("/order/{id}", GetOrder).Methods("GET")
-	r.HandleFunc("/order", GetOrderByUserId)>Methods("GET)
+	r.HandleFunc("/getorders", GetOrderByUserId)>Methods("GET)
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
