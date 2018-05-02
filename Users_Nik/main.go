@@ -19,9 +19,49 @@ var cookieHandler = securecookie.New(
 	securecookie.GenerateRandomKey(64),
 	securecookie.GenerateRandomKey(32))
 
+func getUserName(request *http.Request) (userName string) {
+	if cookie, err := request.Cookie("session"); err == nil {
+		cookieValue := make(map[string]string)
+		if err = cookieHandler.Decode("session", cookie.Value, &cookieValue); err == nil {
+			userName = cookieValue["name"]
+		}
+	}
+	return userName
+}
+
+func internalPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Request) {
+	
+	return func(res http.ResponseWriter, req *http.Request) {
+
+
+	fmt.Println("Inside internalPageHandler")
+
+
+	userName := getUserName(req)
+	if userName != "" {
+		fmt.Println(userName)
+
+		u:=User{}
+
+ 		u, _ = FindUser(userName,s)
+
+ 		respondWithJson(res, 200, u)
+
+
+	} else {
+		http.Redirect(res, req, "/", 302)
+	}
+}
+
+}
 
 
 func setSession(userName string, response http.ResponseWriter) {
+
+
+	fmt.Println("Inside setSession")
+
+
 	value := map[string]string{
 		"name": userName,
 	}
@@ -36,6 +76,10 @@ func setSession(userName string, response http.ResponseWriter) {
 }
 
 func clearSession(response http.ResponseWriter) {
+
+	fmt.Println("Inside clearSession")
+
+
 	cookie := &http.Cookie{
 		Name:   "session",
 		Value:  "",
@@ -65,10 +109,12 @@ type User struct {
 var db *mgo.Database
 
 
+
 // Select * from users where username=""
 func FindUser(username string,s *mgo.Session) (User,error) {
  
     u := User{}
+
 
       
     session := s.Copy()
@@ -137,6 +183,8 @@ func signupPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.R
 	return func(res http.ResponseWriter, req *http.Request) {
 
 
+   fmt.Println("Inside signupPageHandler")
+
 	if req.Method != "POST" {
 		http.ServeFile(res, req, "UserForm/signup.html")
 		return
@@ -186,6 +234,8 @@ func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Reques
 	return func(res http.ResponseWriter, req *http.Request) {
 
   
+   fmt.Println("Inside loginHandler")
+ 	
 // Parse and decode the request body into a new `User` instance	
 	usr := &User{}
 	err := json.NewDecoder(req.Body).Decode(usr)
@@ -240,7 +290,9 @@ func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Reques
 func logoutHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Request) {
 	
 	return func(res http.ResponseWriter, req *http.Request) {
- 
+
+ 	fmt.Println("Inside logoutHandler")
+
     clearSession(res)
 	http.Redirect(res, req, "/", 302)
 
@@ -255,6 +307,7 @@ func homePageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Req
 	
 	return func(res http.ResponseWriter, req *http.Request) {
 
+		fmt.Println("Inside homePageHandler")
 //	http.ServeFile(res, req, "UserForm/index.html")
 
 
@@ -314,9 +367,11 @@ func main() {
 // Route handles & endpoints
   r.HandleFunc(pat.Post("/login"), loginHandler(session))
   r.HandleFunc(pat.Post("/signup"), signupPageHandler(session))
-  //r.HandleFunc(pat.Post("/logout"), logoutHandler(session))
+  r.HandleFunc(pat.Post("/logout"), logoutHandler(session))
 
   r.HandleFunc(pat.Get("/"), homePageHandler(session))
+  
+  r.HandleFunc(pat.Get("/internal"), internalPageHandler(session))
 
  
 
