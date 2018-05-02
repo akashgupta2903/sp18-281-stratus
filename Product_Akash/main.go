@@ -1,20 +1,135 @@
-package models
+package main
 
 import (
+    "net/http"
+    "strconv"
+    "encoding/json"
     "errors"
     "github.com/mediocregopher/radix.v2/pool"
+    "github.com/mediocregopher/radix.v2/redis"
     "log"
-    "strconv"
 )
 
-// Declare a global db variable to store the Redis connection pool.
+func main() {
+    http.HandleFunc("/getdetail", getDetail)
+    http.HandleFunc("/like", addLike)
+    http.HandleFunc("/getallproducts", getALL)
+    http.HandleFunc("/popular", listPopular)
+    http.ListenAndServe(":4000", nil)
+}
+
+
+func getDetail(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    // in case wrong http method is used
+    if r.Method != "GET" {
+        w.Header().Set("Allow", "GET")
+        http.Error(w, http.StatusText(405), 405)
+        return
+    }
+    //in case id is empty
+    id := r.URL.Query().Get("id")
+    if id == "" {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+    if _, err := strconv.Atoi(id); err != nil {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+
+    product, err := FindProduct(id)
+    if err == ErrNoProduct {
+        http.NotFound(w, r)
+        return
+    } else if err != nil {
+        http.Error(w, http.StatusText(500), 500)
+        return
+    }
+    json.NewEncoder(w).Encode(product)
+}
+
+
+func addLike(w http.ResponseWriter, r *http.Request) {
+    w.Header().Set("Content-Type", "application/json")
+    if r.Method != "POST" {
+        w.Header().Set("Allow", "POST")
+        http.Error(w, http.StatusText(405), 405)
+        return
+    }
+    id := r.URL.Query().Get("id")
+    if id == "" {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+    if _, err := strconv.Atoi(id); err != nil {
+        http.Error(w, http.StatusText(400), 400)
+        return
+    }
+
+    err := IncrementLikes(id)
+    if err == ErrNoProduct {
+        http.NotFound(w, r)
+        return
+    } else if err != nil {
+        http.Error(w, http.StatusText(500), 500)
+        return
+    }
+    http.Redirect(w, r, "/getdetail?id="+id, 303)
+}
+
+func getALL(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Content-Type", "application/json")
+  if r.Method != "GET" {
+    w.Header().Set("Allow", "GET")
+    http.Error(w, http.StatusText(405), 405)
+    return
+  }
+  abs, err := FindAll()
+  if err != nil {
+    http.Error(w, http.StatusText(500), 500)
+    return
+  }
+  json.NewEncoder(w).Encode(abs)
+  /*
+  for i, ab := range abs {
+    fmt.Fprintf(w, "%d) %s by %s: £%.2f [%d likes] \n", i+1, ab.Name, ab.Ingredients, ab.Price, ab.Likes)
+  }
+  */
+
+}
+
+
+func listPopular(w http.ResponseWriter, r *http.Request) {
+  w.Header().Set("Content-Type", "application/json")
+  if r.Method != "GET" {
+    w.Header().Set("Allow", "GET")
+    http.Error(w, http.StatusText(405), 405)
+    return
+  }
+
+  abs, err := FindTopThree()
+  if err != nil {
+    http.Error(w, http.StatusText(500), 500)
+    return
+  }
+  json.NewEncoder(w).Encode(abs)
+/*
+  for i, ab := range abs {
+    fmt.Fprintf(w, "%d) %s by %s: £%.2f [%d likes] \n", i+1, ab.Title, ab.Artist, ab.Price, ab.Likes)
+  }
+*/
+}
+
+
+
 var db *pool.Pool
 
 func init() {
     var err error
     // Establish a pool of 10 connections to the Redis server listening on
     // port 6379 of the local machine.
-    db, err = pool.New("tcp", "localhost:6379", 10)
+    db, err = pool.New("tcp", "13.57.12.164:6379" , 10)
     if err != nil {
         log.Panic(err)
     }
@@ -75,6 +190,39 @@ func populateEntry(reply map[string]string) (*Product, error) {
     }
     return product, nil
 }
+
+func IncrementLikes(id string) error {
+    conn, err := db.Get()
+    if err != nil {
+        return err
+    }
+    defer db.Put(conn)
+
+    exists, err := conn.Cmd("EXISTS", "product:"+id).Int()
+    if err != nil {
+        return err
+    } else if exists == 0 {
+        return ErrNoProduct
+    }
+    err = conn.Cmd("MULTI").Err
+    if err != nil {
+        return err
+    }
+    err = conn.Cmd("HINCRBY", "product:"+id, "likes", 1).Err
+    if err != nil {
+        return err
+    }
+    err = conn.Cmd("ZINCRBY", "likes", 1, id).Err
+    if err != nil {
+        return err
+    }
+    err = conn.Cmd("EXEC").Err
+    if err != nil {
+        return err
+    }
+    return nil
+}
+
 
 func FindAll() ([]*Product, error) {
     conn, err := db.Get()
@@ -190,4 +338,3 @@ func FindTopThree() ([]*Product, error) {
         return abs, nil
     }
 }
-
