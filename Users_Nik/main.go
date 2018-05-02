@@ -255,7 +255,7 @@ func homePageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Req
 	
 	return func(res http.ResponseWriter, req *http.Request) {
 
-	http.ServeFile(res, req, "UserForm/index.html")
+//	http.ServeFile(res, req, "UserForm/index.html")
 
 
 }
