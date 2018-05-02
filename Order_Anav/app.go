@@ -101,12 +101,35 @@ func GetOrder(w http.ResponseWriter, r *http.Request){
   respondWithJson(w, http.StatusOK, orders)
 }
 
+//get order by userid
+func GetOrderByUserId(w http.ResponseWriter, r *http.Request){	
+  userStr := r.FormValue("id")
+  var userID int
+  userID, err := strconv.Atoi(userStr)
+  session, err :=mgo.Dial(mongodb_server)
+  if err != nil {
+    panic(err)
+      return
+  }
+  defer session.Close()
+  session.SetMode(mgo.Monotonic, true)
+  c := session.DB(mongodb_database).C(mongodb_collection)
+  var orders []Order
+  
+  err = c.Find(bson.M{"user_id": userID}).All(&orders)
+  if err != nil {
+    respondWithError(w, http.StatusInternalServerError, err.Error())
+    return
+  }
+  respondWithJson(w, http.StatusOK, orders)
+}
 
 func main() {
 	r := mux.NewRouter()
 	r.HandleFunc("/orders", AllOrdersEndpoint).Methods("GET")
 	r.HandleFunc("/orders", CreateOrderEndpoint).Methods("POST")
 	r.HandleFunc("/order/{id}", GetOrder).Methods("GET")
+	r.HandleFunc("/order", GetOrderByUserId)>Methods("GET)
 	if err := http.ListenAndServe(":3000", r); err != nil {
 		log.Fatal(err)
 	}
