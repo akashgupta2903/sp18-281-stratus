@@ -10,6 +10,14 @@ function login() {
     },
     success: function(res) {
       window.location.href = '/catalog';
+    },
+    statusCode: {
+      500: function() {
+        $("#logUsr").val("");
+        $("#logPwd").val("");
+        $("#logUsr").css("border-color", "red");
+        $("#logPwd").css("border-color", "red");
+      }
     }
   });
 }
@@ -36,6 +44,14 @@ function register() {
     },
     success: function(res) {
       window.location.href = '/catalog';
+    },
+    statusCode: {
+      500: function() {
+        $("#regUsr").val("");
+        $("#regPwd").val("");
+        $("#regUsr").css("border-color", "red");
+        $("#regPwd").css("border-color", "red");
+      }
     }
   });
 }

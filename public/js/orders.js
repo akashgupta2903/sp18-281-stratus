@@ -8,7 +8,6 @@ $(document).ready(function() {
     url: '/getLoginInfo',
     success: function(res) {
       loginInfo = res;
-      loginInfo.user_id = 'test@gmail.com';
 
       $.ajax({
         type: 'GET',
@@ -143,6 +142,16 @@ function removeHandler(order, item) {
     console.log(order.Items);
     $(this).parent().remove();
   }
+}
+
+function logout() {
+  $.ajax({
+    type: 'GET',
+    url: '/logout',
+    success: function(res) {
+      window.location.href = '/'
+    }
+  });
 }
 
 var products = [

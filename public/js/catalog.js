@@ -1,18 +1,14 @@
-var loginInfo = {
-  user_id: 'test@gmail.com',
-  username: 'test',
-  password: 'test'
-};
+var loginInfo = {};
 var cart = [];
 
 $(document).ready(function() {
-  /*$.ajax({
+  $.ajax({
     type: 'GET',
     url: '/getLoginInfo',
     success: function(res) {
       loginInfo = res;
     }
-  });*/
+  });
 
   $.ajax({
     type: 'GET',
@@ -106,19 +102,14 @@ function toTitleCase(str)
   });
 }
 
-// Switch to a tab on the user profile
-function openTab(evt, tabName) {
-  var i, tabcontent, tablinks;
-  tabcontent = document.getElementsByClassName("tabcontent");
-  for (i = 0; i < tabcontent.length; i++) {
-    tabcontent[i].style.display = "none";
-  }
-  tablinks = document.getElementsByClassName("tablinks");
-  for (i = 0; i < tablinks.length; i++) {
-    tablinks[i].className = tablinks[i].className.replace(" active", "");
-  }
-  document.getElementById(tabName).style.display = "block";
-  evt.currentTarget.className += " active";
+function logout() {
+  $.ajax({
+    type: 'GET',
+    url: '/logout',
+    success: function(res) {
+      window.location.href = '/'
+    }
+  });
 }
 
 var products = [

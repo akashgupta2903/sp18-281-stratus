@@ -10,9 +10,10 @@ const fs = require('fs');
 // Heroku environment variables
 const PORT = process.env.PORT || 5555;
 const API_PORT = process.env.API_PORT || 4000;
+const USERS_PORT = process.env.USERS_PORT || 8000;
 const PRODUCTS_ENDPOINT = process.env.PRODUCTS_ENDPOINT || "ECS-first-run-alb-201447009.us-west-1.elb.amazonaws.com";
 const ORDERS_ENDPOINT = process.env.ORDERS_ENDPOINT || "ECS-first-run-alb-454373483.us-west-1.elb.amazonaws.com";
-const USERS_ENDPOINT = process.env.USERS_ENDPOINT || "localhost";
+const USERS_ENDPOINT = process.env.USERS_ENDPOINT || "ECS-first-run-alb-431339320.us-west-1.elb.amazonaws.com";
 
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.json());
@@ -44,58 +45,62 @@ app.get('/getLoginInfo', function(req, res) {
 // USER APIS
 
 app.get('/login', (req, res) => {
-  let url = 'http://' + USERS_ENDPOINT + ':' + API_PORT + '/login';
+  let url = 'http://' + USERS_ENDPOINT + ':' + USERS_PORT + '/login';
   let options = {
     url: url,
     method: 'POST',
     json: true,
     body: {
+      'id': '',
       'username': req.query.username,
+      'email': '',
       'password': req.query.password
     }
   };
   request(options, function (error, response, body) {
-    if (!error) {
+    if (!error && !body.error) {
       loginInfo = body;
       res.sendStatus(200);
     } else {
-      console.log("ERROR in /login");
+      console.log("ERROR in /login: " + body.error);
       res.sendStatus(500);
     }
   });
 });
 
 app.get('/register', function(req, res) {
-  let url = 'http://' + USERS_ENDPOINT + ':' + API_PORT + '/signup';
+  let url = 'http://' + USERS_ENDPOINT + ':' + USERS_PORT + '/signup';
   let options = {
     url: url,
     method: 'POST',
     json: true,
     body: {
+      'id': '',
       'username': req.query.username,
+      'email': '',
       'password': req.query.password
     }
   };
   request(options, function (error, response, body) {
-    if (!error) {
+    if (!error && !body.error) {
       loginInfo = body;
       res.sendStatus(200);
     } else {
-      console.log("ERROR in /register");
+      console.log("ERROR in /register: " + body.error);
       res.sendStatus(500);
     }
   });
 });
 
 app.get('/logout', function(req, res) {
-  let url = 'http://' + USERS_ENDPOINT + ':' + API_PORT + '/logout';
+  let url = 'http://' + USERS_ENDPOINT + ':' + USERS_PORT + '/logout';
   let options = {
     url: url,
     method: 'POST'
   };
   request(options, function (error, response, body) {
     if (!error) {
-      res.send(body);
+      res.sendStatus(200);
     } else {
       console.log("ERROR in /logout");
       res.sendStatus(500);
