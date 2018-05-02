@@ -11,12 +11,27 @@ import (
 )
 
 func main() {
+    http.HandleFunc("/", pingHandler)
     http.HandleFunc("/getdetail", getDetail)
     http.HandleFunc("/like", addLike)
     http.HandleFunc("/getallproducts", getALL)
     http.HandleFunc("/popular", listPopular)
     http.ListenAndServe(":4000", nil)
 }
+
+
+/*
+
+func pingHandler (w http.ResponseWriter, req *http.Request) {
+        json.NewEncoder(w)
+}
+
+*/
+
+// for load balancer's health check
+func pingHandler (w http.ResponseWriter, req *http.Request) {
+        json.NewEncoder(w)
+    }
 
 
 func getDetail(w http.ResponseWriter, r *http.Request) {
