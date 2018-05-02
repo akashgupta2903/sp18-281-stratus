@@ -4,10 +4,10 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
-    <script src="../public/js/index.js"></script>
+    <script src="js/orders.js"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
-    <link rel="stylesheet" href="../public/css/index.css">
+    <link rel="stylesheet" href="css/orders.css">
   </head>
   <body>
     <nav class="navbar navbar-default navbar-inverse" role="navigation">
@@ -19,31 +19,27 @@
           </a>
         </div>
         <div class="navbar-header">
+          <a class="navbar-brand" href="/orders">
+            <i class="fas fa-tags"></i>&nbsp;Orders&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </div>
+        <div class="navbar-header">
           <a class="navbar-brand" href="/catalog">
             <i class="fas fa-coffee"></i>&nbsp;Product Catalog&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </div>
+        <div class="navbar-header navbar-right">
+          <a class="navbar-brand" href="/logout">
+            <i class="fas fa-sign-out-alt"></i>&nbsp;Logout&nbsp;&nbsp;&nbsp;&nbsp;
           </a>
         </div>
       </div>
     </nav>
 
-    <!-- login/register fields -->
+    <!-- list of all orders -->
     <div id="contentDiv">
-      <form id="loginForm">
-        <input type="text" name="inputUsr" placeholder="Username"><br/>
-        <input type="password" name="inputPwd" placeholder="Password">
-        <br/>
-        <button type="button" onclick="login();">Login</button><br/>
-        <span>New to the site?&nbsp;</span>
-        <a href="javascript:void(0);" onclick="showForm(true);">Register</a>
-      </form>
-      <form id="registerForm">
-        <input type="text" name="inputUsrReg" placeholder="Username"><br/>
-        <input type="text" name="inputPwdReg" placeholder="Password">
-        <br/>
-        <button type="button" onclick="register();">Register</button><br/>
-        <span>I have an account already! &nbsp;</span>
-        <a href="javascript:void(0);" onclick="showForm(false);">Login</a>
-      </form>
+      <p class="pTitle">My Orders</p>
+      <table id="tblOrders"></table>
     </div>
   </body>
 </html>

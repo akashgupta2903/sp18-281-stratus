@@ -33,6 +33,14 @@ p.pTitle {
   padding-left: 10px;
 }
 
+span.itemSpan {
+  border: 1px solid #777;
+  background-color: #ccc;
+  border-radius: 5px;
+  margin: 5px 5px 0px 0px;
+  padding: 6px 9px;
+}
+
 span.sSettings {
   font-weight: normal;
   font-size: 13pt;
@@ -63,6 +71,7 @@ button.orderButton {
   border: 2px solid #555;
   border-radius: 10px;
   padding: 8px 20px;
+  width: 120px;
 }
 
 button.orderButton:hover {

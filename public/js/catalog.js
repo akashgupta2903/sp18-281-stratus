@@ -1,104 +1,102 @@
+var loginInfo = {
+  user_id: 'test@gmail.com',
+  username: 'test',
+  password: 'test'
+};
+var cart = [];
+
 $(document).ready(function() {
-  // TODO: get actual product information
-  /* 
-  $.ajax({
+  /*$.ajax({
     type: 'GET',
-    url: '/users/getUserInfo',
-    data: {
-      username: username
-    },
+    url: '/getLoginInfo',
     success: function(res) {
-      //
+      loginInfo = res;
     }
   });*/
 
-  let productDataRaw = [
-    {
-      Product_id: 1,
-      Name: "Cafe au Lait",
-      Description: "Half coffee with half steaming milk",
-      Ingredients: "milk, coffee beans, sugar",
-      Category: "coffee",
-      Price: 6.95,
-      Likes: 5
-    },
-    {
-      Product_id: 2,
-      Name: "Croissant",
-      Description: "Buttery flaky pastry originating from France",
-      Ingredients: "wheat, eggs, powdered sugar",
-      Category: "pastry",
-      Price: 4.95,
-      Likes: 10
-    },
-    {
-      Product_id: 3,
-      Name: "Mocha Frappucino",
-      Description: "A coffee that tastes of chocolate",
-      Ingredients: "milk, coffee beans, cocoa",
-      Category: "coffee",
-      Price: 5.95,
-      Likes: 2
-    },
-    {
-      Product_id: 4,
-      Name: "Bagel",
-      Description: "Goes great with lox or cream cheese",
-      Ingredients: "wheat, eggs, yeast",
-      Category: "pastry",
-      Price: 2.95,
-      Likes: 7
-    },
-    {
-      Product_id: 5,
-      Name: "Green Tea Latte",
-      Description: "Green tea latte for those with a refined taste",
-      Ingredients: "milk, matcha powder, sugar",
-      Category: "coffee",
-      Price: 3.95,
-      Likes: 4
-    },
-  ];
-  let categories = {};
-  let pd,cat,tabDiv,btn,contentDiv,tbl,lastTr;
-  for(let i=0; i<productDataRaw.length; i++) {
-    pd = productDataRaw[i];
-    cat = pd.Category;
-    if(cat in categories) {
-      tbl = $("#"+cat).children().first()
-      lastTr = tbl.children().last();
-      if(lastTr.children().length === 4) {
-        lastTr = $("<tr>").append(buildTd(pd)).appendTo(tbl);
-      } else {
-        lastTr.append(buildTd(pd));
+  $.ajax({
+    type: 'GET',
+    url: '/getProducts',
+    success: function(res) {
+      var rows = JSON.parse(res);
+      if(rows[0] == null) {
+        rows = products;
       }
-    } else {
-      tabDiv = $("div.tabDiv");
-      btn = $("<btn>")
-        .addClass("tablinks")
-        .html(toTitleCase(cat)); // TODO: add click handler
-      if(Object.keys(categories === 0)) {
-        btn.addClass("active");
+      console.log(rows);
+      var tbl = $("#productTable").empty();
+      var row,tr,td,h3,p,button;
+      for(var i=0; i<10; i++) {
+        row = rows[i];
+        if(i % 4 === 0) {
+          if(i !== 0) {
+            tr.appendTo(tbl);
+          }
+          tr = $("<tr/>");
+        }
+        td = $("<td/>");
+        h3 = $("<h3/>").html(row.Name).appendTo(td);
+        p = $("<p/>").html("Category: " + row.Category +
+          "<br/>Description: " + row.Description +
+          "<br/>Ingredients: " + row.Ingredients +
+          "<br/>Price: " + row.Price +
+          "<br/>Likes: " + row.Likes).appendTo(td);
+        button = $("<button/>").attr('type','button')
+          .addClass('btn btn-lg productBtn')
+          .click(addToCartHandler(row))
+          .appendTo(td)
+          .html('Add To Cart');
+        td.appendTo(tr);
       }
-      tabDiv.append(btn);
-
-      contentDiv = $("#contentDiv");
-      let tab = buildTab(pd);
-      categories[cat] = tab;
-      contentDiv.append(tab);
+      tbl.append(tr);
     }
-  }
+  });
 });
 
-function buildTab(product) {
-  let div = $("<div>").addClass("tabcontent").attr("id", product.Category);
-  let tbl = $("<table>").append($("<tr>").append(buildTd(product)));
-  div.append(tbl);
-  return div;
+function addToCartHandler(product) {
+  return function() {
+    $("#cartBtn").show();
+    let productId = product.Product_id;
+    if(!cart.includes(productId)) {
+      cart.push(productId);
+
+      let tbl = $("#orderTable").children().last();
+      let tr,td1,td2;
+      tr = $("<tr/>");
+      td1 = $("<td/>").html(product.Name);
+      td2 = $("<td/>").html('$&nbsp;<span>' + product.Price + '</span>');
+      tr.append(td1);
+      tr.append(td2);
+      tbl.before(tr);
+
+      // TODO: enable removing items from the cart
+
+      let oldTotal = $("#total");
+      let newTotal = parseFloat(oldTotal.html()) + parseFloat(product.Price);
+      oldTotal.html(newTotal.toFixed(2));
+    }
+  }
 }
 
-function buildTd(product) {
-  ;
+function placeOrder() {
+  let orderId = getOrderId();
+  $.ajax({
+    type: 'POST',
+    url: '/placeOrder',
+    data: {
+      'Order_id': orderId,
+      'User_id': loginInfo.user_id,
+      'Timestamp': '',
+      'Status': 'Placed',
+      'Items': cart
+    },
+    success: function(res) {
+      window.location.href = '/orders';
+    }
+  });
+}
+
+function getOrderId() {
+  return Math.floor(Math.random() * (9999999 - 20 + 1)) + 20;
 }
 
 function toTitleCase(str)
@@ -123,8 +121,98 @@ function openTab(evt, tabName) {
   evt.currentTarget.className += " active";
 }
 
-
-
+var products = [
+  {
+    "Product_id": 1,
+    "Name": "Americano",
+    "Description": "A shot or two of espresso with hot water added",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 4.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 10,
+    "Name": "Red Eye",
+    "Description": "Coffee with a shot of espresso",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 2.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 2,
+    "Name": "Cappuccino",
+    "Description": "Espresso with a little bit of steamed milk topped with a lot of foam",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 3.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 3,
+    "Name": "Mocha",
+    "Description": "Espresso with steamed milk and chocolate (you can add whipped cream as well!)",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 2.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 4,
+    "Name": "Café au Lait",
+    "Description": "Half coffee with half steamed milk",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 6.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 5,
+    "Name": "Espresso",
+    "Description": "Coffee brewed by forcing a small amount of nearly boiling water under pressure through finely ground beans",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 4,
+    "Likes": 5
+  },
+  {
+    "Product_id": 6,
+    "Name": "Latte",
+    "Description": "Espresso with steamed milk and little to no foam",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 1.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 7,
+    "Name": "Breve",
+    "Description": "Espresso with steamed half and half",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 7.95,
+    "Likes": 5
+  },
+  {
+    "Product_id": 8,
+    "Name": "Macchiato",
+    "Description": "Double shot of espresso with foam on top",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 5.85,
+    "Likes": 5
+  },
+  {
+    "Product_id": 9,
+    "Name": "Chai Latte",
+    "Description": "Half steamed milk with half of our home brewed chai and a pump of vanilla syrup",
+    "Ingredients": "milk, coffee beans, sugar, whipped cream",
+    "Category": "coffee",
+    "Price": 4.95,
+    "Likes": 5
+  }
+];
 
 
 

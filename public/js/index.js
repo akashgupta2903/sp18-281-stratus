@@ -1,5 +1,17 @@
 function login() {
-  // TODO: ajax request to login route, redirect to catalog
+  var un = $("#logUsr").val();
+  var ps = $("#logPwd").val();
+  $.ajax({
+    type: 'GET',
+    url: '/login',
+    data: {
+      username: un,
+      password: ps
+    },
+    success: function(res) {
+      window.location.href = '/catalog';
+    }
+  });
 }
 
 function showForm(register) {
@@ -13,9 +25,17 @@ function showForm(register) {
 }
 
 function register() {
-  // TODO: ajax request to register route, redirect to catalog
+  var un = $("#regUsr").val();
+  var ps = $("#regPwd").val();
+  $.ajax({
+    type: 'GET',
+    url: '/register',
+    data: {
+      username: un,
+      password: ps
+    },
+    success: function(res) {
+      window.location.href = '/catalog';
+    }
+  });
 }
-
-$(document).ready(function() {
-  console.log("hello world");
-});

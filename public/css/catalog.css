@@ -7,53 +7,29 @@ body {
 
 #contentDiv {
   padding: 10px 20px 0px 20px;
-}
-
-/* Style the tab */
-.tabDiv {
-  overflow: hidden;
-  border: 1px solid #ccc;
-  background-color: #f1f1f1;
-}
-
-/* Style the buttons inside the tab */
-.tabDiv button {
-  background-color: inherit;
   float: left;
-  border: none;
-  outline: none;
-  cursor: pointer;
-  padding: 14px 16px;
-  transition: 0.3s;
-  font-size: 17px;
-  width: 150px;
+  width: 80%;
 }
 
-/* Change background color of buttons on hover */
-.tabDiv button:hover {
-  background-color: #ddd;
+#cartDiv {
+  padding: 10px 5px 10px 5px;
+  float: left;
+  width: 20%;
+  background-color: #fafafa;
+  height: 800px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 2px solid #888;
+  text-align: center;
 }
 
-/* Create an active/current tablink class */
-.tabDiv button.active {
-  background-color: #ccc;
-}
-
-/* Style the tab content */
-.tabcontent {
-  display: none;
-  padding: 6px 12px;
-  border: 1px solid #ccc;
-  border-top: none;
-}
-
-table{
+#productTable{
   width: 100%;
   border-collapse: separate;
   border-spacing: 5px;
 }
 
-td{
+#productTable td{
   width: 25%;
   text-align: left;
   border-radius: 10px;
@@ -62,9 +38,36 @@ td{
   margin: 5px;
 }
 
-td:hover{
+#orderTable{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+#orderTable td{
+  width: 50%;
+  text-align: center;
+  padding: 5px 10px;
+}
+
+#cartBtn {
+  display: none;
+  background-color: #ccc;
+  margin-top: 10px;
+}
+
+#cartBtn:hover {
+  background-color: #888;
+}
+
+button.productBtn:hover {
   background-color: #ccc;
 }
+
+/*
+td:hover{
+  background-color: #ccc;
+}*/
 
 p.pSettings {
   font-weight: bold;
