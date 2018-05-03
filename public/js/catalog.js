@@ -48,6 +48,62 @@ $(document).ready(function() {
   });
 });
 
+//Like addToCartHandler
+function likeHandler(product) {
+  return function() {
+    $.ajax({
+      type : 'POST',
+      url : 'likeProduct',
+      data : {
+        'id' : product.Product_id
+      },
+      success : function(res) {
+      $.ajax({
+          type: 'GET',
+          url: '/getProducts',
+          success: function(res) {
+            var rows = JSON.parse(res);
+            if(rows[0] == null) {
+              rows = products;
+            }
+            console.log(rows);
+            var tbl = $("#productTable").empty();
+            var row,tr,td,h3,p,button,button1;
+            for(var i=0; i<10; i++) {
+              row = rows[i];
+              if(i % 4 === 0) {
+                if(i !== 0) {
+                  tr.appendTo(tbl);
+                }
+                tr = $("<tr/>");
+              }
+              td = $("<td/>");
+              h3 = $("<h3/>").html(row.Name).appendTo(td);
+              p = $("<p/>").html("Category: " + row.Category +
+                "<br/>Description: " + row.Description +
+                "<br/>Ingredients: " + row.Ingredients +
+                "<br/>Price: " + row.Price +
+                "<br/>Likes: " + row.Likes).appendTo(td);
+              button = $("<button/>").attr('type','button')
+                .addClass('btn btn-lg productBtn')
+                .click(addToCartHandler(row))
+                .appendTo(td)
+                .html('Add To Cart');
+              button1 = $("<button/>").attr('type','button')
+                .addClass('btn btn-lg productBtn')
+                .click(likeHandler(row))
+                .appendTo(td)
+                .html('Like');
+              td.appendTo(tr);
+            }
+            tbl.append(tr);
+          }
+        });
+      }
+    });
+  }
+}
+
 function addToCartHandler(product) {
   return function() {
     $("#cartBtn").show();
@@ -204,9 +260,3 @@ var products = [
     "Likes": 5
   }
 ];
-
-
-
-
-
-
