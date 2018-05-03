@@ -7,3 +7,8 @@
 | 4/15 - 4/21 | <ol><li>Team started writing the backend Go APIs as per individual assignment</li><li>Team Started setting up the different database clusters to be used</li></ol>  | <ol><li>Writting backend APIs in go due to lack of familiarity</li><li>Setting up mongo replica set and Redis master-slave cluster</li></ol>  |
 | 4/22 - 4/28 | <ol><li>Started developing a basic User Interface for the application</li><li>Started deploying the backend services on ECS as per our architecture</li></ol>  | <ol><li>Connecting the backend with the frontend</li><li>Setting up the ECS clusters for various services</li></ol>  |
 | 4/29 - 5/04 | <ol><li></li><li></li></ol>  | <ol><li></li><li></li></ol>  |
+
+
+## Architectural Overview
+
+<img width="702" alt="screen shot 2018-05-02 at 7 57 03 pm" src="https://user-images.githubusercontent.com/32351699/39558394-12ba0b2a-4e43-11e8-9384-4a9a037f43ff.png">
