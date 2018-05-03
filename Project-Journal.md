@@ -1,0 +1,9 @@
+## Weekly Progress
+
+| Week  | Progress  | Challenge  |
+| ------------ | ------------ | ------------ |
+| 4/1 - 4/07 | <ol><li>Had Team meetings in order to decide the application for our Team project and finally agreed on Starbucks</li><li>Discussed about the backend architecture and the API end points needed to provide the basic application functionalities</li><li>Had discussions within team to decide the databases to be used for storing different types of data</li></ol> | <ol><li>Agreeing on building Starbucks for our Team hackathon project</li><li>Coming down to enough number of backend APIs so that a smooth user experience could be provided</li><li>Deciding the backend micro-service architecture for our application</li></ol>|
+| 4/8 - 4/14 | <ol><li>After reading about the various NoSQL databases, the team agreed on using MongoDB to store orders and users data & Redis database to store the product catalog data</li><li>Assigned the backend APIs to individuals so that development can be performed in parallel</li></ol> | <ol><li>Agreeing on using Redis as persistent database for storing product data</li><li>Splitting the application into micro-services</li></ol>  |
+| 4/15 - 4/21 | <ol><li>Team started writing the backend Go APIs as per individual assignment</li><li>Team Started setting up the different database clusters to be used</li></ol>  | <ol><li>Writting backend APIs in go due to lack of familiarity</li><li>Setting up mongo replica set and Redis master-slave cluster</li></ol>  |
+| 4/22 - 4/28 | <ol><li>Started developing a basic User Interface for the application</li><li>Started deploying the backend services on ECS as per our architecture</li></ol>  | <ol><li>Connecting the backend with the frontend</li><li>Setting up the ECS clusters for various services</li></ol>  |
+| 4/29 - 5/04 | <ol><li></li><li></li></ol>  | <ol><li></li><li></li></ol>  |
