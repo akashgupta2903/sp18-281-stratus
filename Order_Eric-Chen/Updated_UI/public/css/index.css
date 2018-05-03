@@ -1,0 +1,65 @@
+body {
+  background-image: url("../assets/coffee.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+
+span {
+  color: #eee;
+}
+
+input {
+  margin: 10px;
+  padding: 5px 10px;
+  border: 2px solid #999;
+  border-radius: 5px;
+  width: 200px;
+}
+
+button {
+  margin: 10px;
+  background-color: #eee;
+  border: 2px solid #999;
+  border-radius: 10px;
+  padding: 8px 20px;
+}
+
+button:hover {
+  background-color: #ccc;
+}
+
+span,input,a,button {
+  font-size: 16pt;
+}
+
+#contentDiv {
+  text-align: center;
+  padding-top: 150px;
+}
+
+#registerForm {
+  display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -1,0 +1,101 @@
+body {
+  background-image: url("../assets/coffee.jpg");
+  background-repeat: no-repeat;
+  background-size: cover;
+  height: 100%;
+}
+
+#contentDiv {
+  padding: 10px 20px 0px 20px;
+  float: left;
+  width: 80%;
+}
+
+#cartDiv {
+  padding: 10px 5px 10px 5px;
+  float: left;
+  width: 20%;
+  background-color: #fafafa;
+  height: 800px;
+  border-top-left-radius: 10px;
+  border-bottom-left-radius: 10px;
+  border: 2px solid #888;
+  text-align: center;
+}
+
+#productTable{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 5px;
+}
+
+#productTable td{
+  width: 25%;
+  text-align: left;
+  border-radius: 10px;
+  padding: 10px;
+  background-color: #f2f2f2;
+  margin: 5px;
+}
+
+#orderTable{
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 2px;
+}
+
+#orderTable td{
+  width: 50%;
+  text-align: center;
+  padding: 5px 10px;
+}
+
+#cartBtn {
+  display: none;
+  background-color: #ccc;
+  margin-top: 10px;
+}
+
+#cartBtn:hover {
+  background-color: #888;
+}
+
+button.productBtn:hover {
+  background-color: #ccc;
+}
+
+/*
+td:hover{
+  background-color: #ccc;
+}*/
+
+p.pSettings {
+  font-weight: bold;
+  font-size: 13pt;
+}
+
+span.sSettings {
+  font-weight: normal;
+  font-size: 13pt;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
