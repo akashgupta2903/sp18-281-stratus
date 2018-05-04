@@ -1,3 +1,5 @@
+# CMPE 281 Stratus Team Project: Starbucks
+
 ## Weekly Progress
 
 | Week  | Progress  | Challenge  |
@@ -11,7 +13,25 @@
 
 ## Architectural Overview
 
+### Diagram
+
 <img width="702" alt="screen shot 2018-05-02 at 7 57 03 pm" src="https://user-images.githubusercontent.com/32351699/39558394-12ba0b2a-4e43-11e8-9384-4a9a037f43ff.png">
+
+### Description
+
+1. Web Browsers
+  * Written in HTML, CSS, and JavaScript, with jQuery
+  * 3 basic pages: home page (supporting login &amp; register; catalog page (supporting viewing products &amp; placing an order); orders page (supporting updating, paying for, or canceling an order)
+2. Web Server
+  * Node.js server responsible for handling requests from the UI, and forwarding them to the correct service
+3. API Layer
+  * Go APIs written by the team members, responsible for processing the request and interacting with the database layer as needed
+  * Each microservice (user APIs, order APIs, or product APIs) is deployed on an AWS ECS instance cluster of 2 containers, with a load balancer in front
+  * Load balancer configured to use sticky sessions so that requests from a particular client are always routed to the same service
+4. Persistence Layer
+  * Distributed NoSQL databases, sharded on the type of data (user, order, or product data)
+  * User &amp; order data stored in MongoDB clusters with one primary and four secondary nodes, with automated reelection of the primary node in the case of a network partition, to basically ensure availability
+  * Product data stored in Redis cluster with one master node and four slaves, with a quorum approach employed to basically ensure consistency in the case of a network partition
 
 ## Youtube Demonstration
 
