@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+    <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+    <script src="js/orders.js"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.0.10/css/all.css">
+    <link rel="stylesheet" href="css/orders.css">
+  </head>
+  <body>
+    <nav class="navbar navbar-default navbar-inverse" role="navigation">
+      <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/">
+            <i class="fas fa-home"></i>&nbsp;Home&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </div>
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/orders">
+            <i class="fas fa-tags"></i>&nbsp;Orders&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </div>
+        <div class="navbar-header">
+          <a class="navbar-brand" href="/catalog">
+            <i class="fas fa-coffee"></i>&nbsp;Product Catalog&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </div>
+        <div class="navbar-header navbar-right">
+          <a class="navbar-brand" href="javascript:void(0);" onclick="logout();">
+            <i class="fas fa-sign-out-alt"></i>&nbsp;Logout&nbsp;&nbsp;&nbsp;&nbsp;
+          </a>
+        </div>
+      </div>
+    </nav>
+
+    <!-- list of all orders -->
+    <div id="contentDiv">
+      <p class="pTitle">My Orders</p>
+      <table id="tblOrders"></table>
+    </div>
+    <span id="paySuccessSpan">Payment Received Successfully!</span>
+    <span id="cancelSuccessSpan">Order Successfully Canceled!</span>
+  </body>
+</html>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

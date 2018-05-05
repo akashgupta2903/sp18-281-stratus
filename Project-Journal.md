@@ -15,7 +15,8 @@
 
 ### Diagram
 
-<img width="702" alt="screen shot 2018-05-02 at 7 57 03 pm" src="https://user-images.githubusercontent.com/32351699/39558394-12ba0b2a-4e43-11e8-9384-4a9a037f43ff.png">
+<img width="739" alt="screen shot 2018-05-04 at 6 02 50 pm" src="https://user-images.githubusercontent.com/32351699/39658180-777b8858-4fc5-11e8-84a5-7de086138b7e.png">
+
 
 ### Description
 
@@ -35,4 +36,8 @@
 
 ## Youtube Demonstration
 
+<<<<<<< HEAD
 [Video](https://youtu.be/p_lyTTVW22M)
+=======
+[Video](https://youtu.be/yLtQAJmPgJo)
+>>>>>>> 2972f3cb9698211b6bb2d69a86c4693e7dddcc15
