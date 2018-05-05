@@ -33,15 +33,21 @@ func internalPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http
 	
 	return func(res http.ResponseWriter, req *http.Request) {
 
+
 	fmt.Println("Inside internalPageHandler")
+
 
 	userName := getUserName(req)
 	if userName != "" {
 		fmt.Println(userName)
 
 		u:=User{}
+
  		u, _ = FindUser(userName,s)
+
  		respondWithJson(res, 200, u)
+
+
 	} else {
 		http.Redirect(res, req, "/", 302)
 	}
@@ -52,7 +58,9 @@ func internalPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http
 
 func setSession(userName string, response http.ResponseWriter) {
 
+
 	fmt.Println("Inside setSession")
+
 
 	value := map[string]string{
 		"name": userName,
@@ -71,6 +79,7 @@ func clearSession(response http.ResponseWriter) {
 
 	fmt.Println("Inside clearSession")
 
+
 	cookie := &http.Cookie{
 		Name:   "session",
 		Value:  "",
@@ -80,11 +89,13 @@ func clearSession(response http.ResponseWriter) {
 	http.SetCookie(response, cookie)
 }
 
+
+
 // server main method
 
 
 // MongoDB Config
-var mongodb_server = "localhost"
+var mongodb_server = "mongodb://54.67.121.40:27017,54.67.79.72:27017,54.193.98.71:27017,13.57.11.69:27017,13.57.59.232:27017/?replicaSet=rs0"
 var mongodb_database = "cmpe281"
 var mongodb_collection = "users"
 
@@ -97,42 +108,62 @@ type User struct {
 
 var db *mgo.Database
 
+
+
 // Select * from users where username=""
 func FindUser(username string,s *mgo.Session) (User,error) {
  
-    u := User{}     
+    u := User{}
+
+
+      
     session := s.Copy()
     defer session.Close()
  
     db=session.DB(mongodb_database)
+
+
     c := db.C(mongodb_collection)
 
     err := c.Find(bson.M{"username":username}).One(&u)
   
    if  err != nil {
+
    	// user with usrname exists
+
     return u, err
   }
+   
    return u, nil
 
 }
 
+
 // Select password from users where username=""
 func CheckPassword(username string,password string,s *mgo.Session) (User,error) {
  
-    u := User{}   
+    u := User{}
+
+      
     session := s.Copy()
     defer session.Close()
+ 
     db=session.DB(mongodb_database)
+
+
     c := db.C(mongodb_collection)
 
     err := c.Find(bson.M{"username":username}).One(&u)
   
    if  err != nil {
+
    	// user with usrname exists
+
     return u, err
   }
+   
    return u, nil
+
 }
 
 
@@ -151,8 +182,9 @@ func signupPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.R
 	
 	return func(res http.ResponseWriter, req *http.Request) {
 
+
    fmt.Println("Inside signupPageHandler")
-		
+
 	if req.Method != "POST" {
 		http.ServeFile(res, req, "UserForm/signup.html")
 		return
@@ -160,6 +192,7 @@ func signupPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.R
 
 	// Decode credentials from json body
 	u := &User{}
+
 	err := json.NewDecoder(req.Body).Decode(u)
 
 	if err != nil {
@@ -169,13 +202,18 @@ func signupPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.R
 	}
 
 	hashedPassword, err := bcrypt.GenerateFromPassword([]byte(u.Password), 8)
- 	uid, _ := uuid.NewV4()
-       	u.User_id=uid.String()
-	u.Password=string(hashedPassword)
+
+		uid, _ := uuid.NewV4()
+       
+        u.User_id=uid.String()
+	
+		u.Password=string(hashedPassword)
 
 	session := s.Copy()
-        defer session.Close()
-	c := session.DB(mongodb_database).C(mongodb_collection)
+     defer session.Close()
+
+    c := session.DB(mongodb_database).C(mongodb_collection)
+
 
 	if err := c.Insert(&u); err != nil {
 		respondWithError(res, http.StatusInternalServerError, err.Error())
@@ -184,13 +222,46 @@ func signupPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.R
 
 	respondWithJson(res, http.StatusCreated, u)
 
+
 }
+
 }
+
+func LikeProduct(w http.ResponseWriter, r *http.Request){
+  productID := r.FormValue("id")
+  //userID, err := strconv.Atoi(userStr)
+  session, err :=mgo.Dial(mongodb_server)
+  if err != nil {
+    panic(err)
+      return
+  }
+  defer session.Close()
+  session.SetMode(mgo.Monotonic, true)
+  c := session.DB(mongodb_database).C(mongodb_collection)
+
+
+  
+  query := bson.M{"product_id" : productID}
+  change := bson.M{"$inc": bson.M{"likes": 1}}
+  err = c.Update(query, change)
+
+  var product []Product
+
+  err = c.Find(bson.M{"product_id": productID}).All(&product)
+  if err != nil {
+    respondWithError(w, http.StatusInternalServerError, err.Error())
+    return
+  }
+  http.Redirect(w, r, "/getallproducts", 303)
+}
+
 
 
 func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Request) {
 
+
 	return func(res http.ResponseWriter, req *http.Request) {
+
   
    fmt.Println("Inside loginHandler")
  	
@@ -204,15 +275,16 @@ func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Reques
 		return 
 	}
 
-      session := s.Copy()
-      defer session.Close()
+     session := s.Copy()
+     defer session.Close()
 
-      c := session.DB(mongodb_database).C(mongodb_collection)
-      storedUsr := &User{}
-		
+    c := session.DB(mongodb_database).C(mongodb_collection)
+
+	storedUsr := &User{}
 	// Get the existing entry present in the database for the given username
-      err = c.Find( bson.M{"username":usr.UserName}).Select(bson.M{"password": 1}).One(&storedUsr)
-		
+	err = c.Find( bson.M{"username":usr.UserName}).Select(bson.M{"password": 1}).One(&storedUsr)
+
+
 	if err != nil {
 		respondWithError(res, http.StatusInternalServerError,"UserName doesnt exist")
 		return
@@ -225,23 +297,37 @@ func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Reques
 		respondWithError(res, http.StatusInternalServerError, "Invalid Password")
 		return
 	}
+
+
 	u := User{}
-        err = c.Find(bson.M{"username":usr.UserName}).One(&u)
-        setSession(u.UserName, res)
+
+    err = c.Find(bson.M{"username":usr.UserName}).One(&u)
+
+   
+    setSession(u.UserName, res)
+
 	//res.Write([]byte("Hello " + usr.UserName))
+
 	respondWithJson(res, http.StatusCreated, u)
 
 }
+
+
 }
+
 
 func logoutHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Request) {
 	
 	return func(res http.ResponseWriter, req *http.Request) {
 
  	fmt.Println("Inside logoutHandler")
-        clearSession(res)
+
+    clearSession(res)
 	http.Redirect(res, req, "/", 302)
+
+
 }
+
 }
 
 
@@ -252,7 +338,10 @@ func homePageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Req
 
 		fmt.Println("Inside homePageHandler")
 //	http.ServeFile(res, req, "UserForm/index.html")
+
+
 }
+
 }
 
 
@@ -270,6 +359,7 @@ func respondWithError(w http.ResponseWriter, code int, msg string) {
 func ensureIndex(s *mgo.Session) {
 	session := s.Copy()
 	defer session.Close()
+
 	c := session.DB(mongodb_database).C(mongodb_collection)
 
 	index := mgo.Index{
@@ -283,32 +373,58 @@ func ensureIndex(s *mgo.Session) {
 	if err != nil {
 		panic(err)
 	}
-	
 }
+
+
+func pingHandler (s *mgo.Session) func(res http.ResponseWriter, req *http.Request) {
+	
+	return func(res http.ResponseWriter, req *http.Request) {
+		
+		respondWithJson(res, 200 , " Test Alive ")
+	//	json.NewEncoder(w)
+}
+
+}
+
 
 func main() {
 
 	session, err := mgo.Dial(mongodb_server)
+    
         if err != nil {
                 panic(err)
         }
 
         defer session.Close()
         session.SetMode(mgo.Monotonic, true)
+
         ensureIndex(session)
+
+
      // Init router
   r := goji.NewMux()
+
+
 // Route handles & endpoints
+  //http.HandleFunc("/ping", pingHandler)
+
+  r.HandleFunc(pat.Get("/ping"), pingHandler(session))
+  
   r.HandleFunc(pat.Post("/login"), loginHandler(session))
   r.HandleFunc(pat.Post("/signup"), signupPageHandler(session))
   r.HandleFunc(pat.Post("/logout"), logoutHandler(session))
-
+ 
   r.HandleFunc(pat.Get("/"), homePageHandler(session))
   
   r.HandleFunc(pat.Get("/internal"), internalPageHandler(session))
+
+ 
+
   fmt.Println("Starbucks server listening on port 8000")
+
   http.ListenAndServe(":8000", r)
-	
+
+
 }
 
 
