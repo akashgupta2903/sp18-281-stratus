@@ -36,8 +36,4 @@
 
 ## Youtube Demonstration
 
-<<<<<<< HEAD
 [Video](https://youtu.be/p_lyTTVW22M)
-=======
-[Video](https://youtu.be/yLtQAJmPgJo)
->>>>>>> 2972f3cb9698211b6bb2d69a86c4693e7dddcc15
