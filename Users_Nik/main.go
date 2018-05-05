@@ -227,34 +227,6 @@ func signupPageHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.R
 
 }
 
-func LikeProduct(w http.ResponseWriter, r *http.Request){
-  productID := r.FormValue("id")
-  //userID, err := strconv.Atoi(userStr)
-  session, err :=mgo.Dial(mongodb_server)
-  if err != nil {
-    panic(err)
-      return
-  }
-  defer session.Close()
-  session.SetMode(mgo.Monotonic, true)
-  c := session.DB(mongodb_database).C(mongodb_collection)
-
-
-  
-  query := bson.M{"product_id" : productID}
-  change := bson.M{"$inc": bson.M{"likes": 1}}
-  err = c.Update(query, change)
-
-  var product []Product
-
-  err = c.Find(bson.M{"product_id": productID}).All(&product)
-  if err != nil {
-    respondWithError(w, http.StatusInternalServerError, err.Error())
-    return
-  }
-  http.Redirect(w, r, "/getallproducts", 303)
-}
-
 
 
 func loginHandler(s *mgo.Session) func(res http.ResponseWriter, req *http.Request) {
@@ -414,7 +386,7 @@ func main() {
   r.HandleFunc(pat.Post("/signup"), signupPageHandler(session))
   r.HandleFunc(pat.Post("/logout"), logoutHandler(session))
  
-  r.HandleFunc(pat.Get("/"), homePageHandler(session))
+  r.HandleFunc(pat.Get("/"), homePageHandler(session)) // health check
   
   r.HandleFunc(pat.Get("/internal"), internalPageHandler(session))
 
